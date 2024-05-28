@@ -10,7 +10,7 @@ imagen = pagina.to_image(resolution=300)
 imagen.show()
 ```
 
-![](C:\Users\Usuario-\AppData\Roaming\marktext\images\2024-05-28-11-04-21-image.png)
+![](assets\2024-05-28-11-04-21-image.png)
 
 ```python
 # depuración visual para ver que tablas reconoce
@@ -21,7 +21,7 @@ imagen.debug_tablefinder().show() #si no muestra lineas azules y rojas, no encon
 # si no encuentra nada puedo empezar a parametrizar la busqueda con table_settings
 ```
 
-![](C:\Users\Usuario-\AppData\Roaming\marktext\images\2024-05-28-11-06-50-image.png)
+![](assets\2024-05-28-11-06-50-image.png)
 
     
 
@@ -36,7 +36,7 @@ imagen.debug_tablefinder().show() #si no muestra lineas azules y rojas, no encon
 imagen.reset().debug_tablefinder(table_settings).show()
 ```
 
-![](C:\Users\Usuario-\AppData\Roaming\marktext\images\2024-05-28-11-09-17-image.png)
+![](assets\2024-05-28-11-09-17-image.png)
 
 ```python
     # ahora extraigo la tabla de acuerdo a table_settings
@@ -47,4 +47,4 @@ imagen.reset().debug_tablefinder(table_settings).show()
    # se va a observar que respeta exactamente lo que encontro con table_settings
 ```
 
-![](C:\Users\Usuario-\AppData\Roaming\marktext\images\2024-05-28-11-12-33-image.png)
+![](assets\2024-05-28-11-12-33-image.png)
