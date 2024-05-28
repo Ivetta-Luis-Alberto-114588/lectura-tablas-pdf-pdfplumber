@@ -76,3 +76,49 @@ imagen.reset().debug_tablefinder(table_settings).show()
 ```
 
 ![](assets/2024-05-28-12-02-19-image.png)
+
+```python
+# con los datos de las coordenadas que queremos recortar, tenemos que trabajar
+# con la pagina de pdf, no se puede trabajar con la imagen
+pagina_recortada = pagina.within_bbox((85, 175, 510, 255))
+
+#para extraer el texto
+text = pagina_recortada.extract_text(keep_blank_chars=True)
+print(text)
+```
+
+![](assets/2024-05-28-12-19-35-image.png)
+
+
+
+```python
+   #EXTRAER PERIODO DE UNA ZONA EN PARTICULAR
+  corte = pagina.within_bbox((0, 129, pagina.width, 145))
+  corte.to_image().show()
+  texto = corte.extract_text()
+  print(texto)
+```
+
+![](assets/2024-05-28-13-12-55-image.png)
+
+![](assets/2024-05-28-13-13-18-image.png)
+
+
+
+```python
+# para buscar un texto determinado y extraer la fila completa
+resultados = []
+palabras_buscadas = "") Carne c/hueso"
+
+texto = pagina.extract_text()
+# Divide el texto en líneas
+lineas = texto.split('\n')
+# Recorre cada línea
+for i, linea in enumerate(lineas):
+  # Si la línea comienza con la palabra especificada
+  if linea.startswith(palabras_buscadas):
+  # Agrega la línea a la lista de resultados
+  resultados.append(linea)
+```
+
+![](assets/2024-05-28-13-16-59-image.png)

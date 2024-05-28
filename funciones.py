@@ -1,7 +1,7 @@
 import os
 import sys
 import pdfplumber
-import glob
+import pandas as pd
 
 def obtener_archivos_directorio(directorio):
     """
@@ -48,28 +48,29 @@ def obtener_archivos_directorio(directorio):
     return lista_directorio_y_nombre
 
 
-def encontrar_tablas(lista_pdf, palabras_buscadas):
+def encontrar_tablas(lista_pdf, titulo, palabras_buscadas):
     """
-    Esta función recibe una lista de rutas de archivos PDF y una palabra. Busca en cada archivo PDF
-    las líneas que comienzan con la palabra especificada. Devuelve una lista de las líneas que comienzan 
-    con la palabra especificada en cada archivo PDF.
+    Esta función recibe una lista de rutas de archivos PDF, un título y una palabra. Busca en cada archivo PDF
+    las líneas que comienzan con el título especificado, y luego busca las líneas que comienzan con la palabra especificada.
+    Devuelve una lista de las líneas que comienzan con la palabra especificada en cada archivo PDF después del título.
 
     Args:
         lista_pdf (list): Una lista de rutas a los archivos PDF en los que buscar.
-        palabras_buscadas (str): La palabra con la que debe comenzar la línea.
+        titulo (str): El título que debe aparecer antes de las líneas que comienzan con la palabra especificada.
+        palabras_buscadas (str): La palabra con la que debe comenzar la línea después del título.
 
     Returns:
-        list: Una lista de las líneas que comienzan con la palabra especificada en cada archivo PDF.
+        list: Una lista de las líneas que comienzan con la palabra especificada en cada archivo PDF después del título.
 
     Ejemplo de uso:
-        >>> encontrar_tablas(['ruta/a/tu/archivo1.pdf', 'ruta/a/tu/archivo2.pdf'], 'Palabra')
+        >>> encontrar_tablas(['ruta/a/tu/archivo1.pdf', 'ruta/a/tu/archivo2.pdf'], 'Titulo', 'Palabra')
     """
     # Inicializa una lista vacía para almacenar los resultados
     resultados = []
 
     # Recorre cada ruta de PDF
     for ruta_pdf in lista_pdf:
-        print(ruta_pdf)
+        # print(ruta_pdf)
         # Abre el archivo PDF
         with pdfplumber.open(ruta_pdf) as pdf:
             # Recorre cada página en el PDF
@@ -78,15 +79,64 @@ def encontrar_tablas(lista_pdf, palabras_buscadas):
                 texto = pagina.extract_text()
                 # Divide el texto en líneas
                 lineas = texto.split('\n')
+                # Inicializa una variable para rastrear si hemos encontrado el título
+                titulo_encontrado = False
+                # Inicializa una variable para almacenar los últimos 10 caracteres de la línea "PERIODO"
+                periodo = None
                 # Recorre cada línea
                 for i, linea in enumerate(lineas):
-                    # Si la línea comienza con la palabra especificada
-                    if linea.startswith(palabras_buscadas):
-                        # Agrega la línea a la lista de resultados
-                        resultados.append(linea)
+                    # Si la línea comienza con "PERIODO"
+                    if linea.startswith("PERIODO"):
+                        # Almacena los últimos 10 caracteres de la línea
+                        periodo = linea[-10:]
+                    # Si la línea comienza con el título especificado
+                    elif linea.startswith(titulo):
+                        # Marca que hemos encontrado el título
+                        titulo_encontrado = True
+                    # Si hemos encontrado el título y la línea comienza con la palabra especificada
+                    elif titulo_encontrado and linea.startswith(palabras_buscadas):
+                        # Agrega la línea y el periodo a la lista de resultados
+                        resultados.append(periodo + " " + linea)
+                        # Rompe el bucle, ya que solo queremos el primer hallazgo después del título
+                        break
 
     # Devuelve la lista de resultados
     return resultados
+
+import pandas as pd
+
+def generar_dataframe(lista):
+    # Inicializa las listas para almacenar los datos
+    periodos = []
+    productos = []
+    precios = []
+
+    # Recorre cada elemento en la lista
+    for elemento in lista:
+        # Divide el elemento en tres partes
+        periodo, _, resto = elemento.partition("a)")
+        producto, _, resto = resto.partition("kg.")
+        precio = resto.strip()
+
+        # Agrega las partes a las listas correspondientes
+        periodos.append(periodo.strip())
+        productos.append(producto.strip())
+        precios.append(precio)
+
+    # Crea un DataFrame de pandas a partir de las listas
+    df = pd.DataFrame({
+        "periodo": periodos,
+        "carne con hueso": productos,
+        "precio": precios
+    })
+
+    # Devuelve el DataFrame
+    print(df)
+    return df
+
+
+
+
 
 def ver_pdf(archivo, pagina):
     
@@ -118,9 +168,10 @@ def ver_pdf(archivo, pagina):
     # stroke_width es el ancho de la linea
     
     recorte = imagen.draw_rect((85, 175, 510, 255), stroke=(255, 0, 0), stroke_width=10)
-    recorte.show()
+    # recorte.show()
     # draw_rect es para dibujar un rectangulo
     # draw_rects es para dibujar rectangulos
+    pagina_recortada = pagina.within_bbox((85, 175, 510, 255))
     
     
     # draw_circle es para dibujar un circulo
@@ -182,7 +233,8 @@ def ver_pdf(archivo, pagina):
     # imagen.reset().draw_rects(pagina.chars).show()
     
     #ahora se a extraer todo el texto, incluyendo los espacios en blanco
-    # text = pagina.extract_text(keep_blank_chars=True)
+    
+    # text = pagina_recortada.extract_text(keep_blank_chars=True)
     # print(text)
     
     
