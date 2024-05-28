@@ -117,7 +117,8 @@ def ver_pdf(archivo, pagina):
     # stroke es el color de la linea
     # stroke_width es el ancho de la linea
     
-    imagen.draw_rect((85, 175, 510, 255), stroke=(255, 0, 0), stroke_width=10).show()
+    recorte = imagen.draw_rect((85, 175, 510, 255), stroke=(255, 0, 0), stroke_width=10)
+    recorte.show()
     # draw_rect es para dibujar un rectangulo
     # draw_rects es para dibujar rectangulos
     
@@ -128,15 +129,15 @@ def ver_pdf(archivo, pagina):
     
     # ---------------------------- TABLE_SETTINGS
     # parametrizar la deteccion de tablas con plumber
-    # table_settings = {
-    #     "vertical_strategy": "text", #"lines", "lines_strict", "text", or "explicit"
-    #     "horizontal_strategy": "text", #"lines", "lines_strict", "text", or "explicit"
-    #     "snap_y_tolerance": 5,
-    #     "intersection_x_tolerance": 1,
-    # }
+    table_settings = {
+        "vertical_strategy": "text", #"lines", "lines_strict", "text", or "explicit"
+        "horizontal_strategy": "text", #"lines", "lines_strict", "text", or "explicit"
+        "snap_y_tolerance": 5,
+        "intersection_x_tolerance": 1,
+    }
     # imagen.reset().debug_tablefinder(table_settings).show()
     
-    # # ahora extraigo la tabla de acuerdo a table_settings
+    # ahora extraigo la tabla de acuerdo a table_settings
     # tablas = pagina.extract_tables(table_settings)
     # for row in tablas[:5]:
     #     print(row)
