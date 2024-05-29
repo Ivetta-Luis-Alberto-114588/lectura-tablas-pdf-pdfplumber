@@ -148,11 +148,26 @@ def ver_pdf(archivo, pagina):
     imagen = pagina.to_image(resolution=150)
     # imagen.show()
     
+    
+    # ---------------------------- TABLE_SETTINGS
+    # parametrizar la deteccion de tablas con plumber
+    table_settings = {
+    "vertical_strategy": "explicit", 
+    "horizontal_strategy": "explicit",
+    "explicit_vertical_lines": [90, 300, 380, 500],
+    "explicit_horizontal_lines": [180,198,212, 250],
+    
+}
+
+    # imagen.reset().debug_tablefinder(table_settings).show()
+    
+    
+    
     # ---------------- PARA VER VISUALMENTE QUE ES LO QUE ENCUENTRA PLUMBER
     # depuración visual para ver que tablas reconoce
     # las lineas rojas representa las lineas, los circulos azules son las intersecciones enter las lineas
     # los pintado de celeste representa las celdas
-    # imagen.debug_tablefinder().show() #si no muestra lineas azules y rojas, no encontro nada
+    # imagen.debug_tablefinder() #si no muestra lineas azules y rojas, no encontro nada
     
     # si no encuentra nada puedo empezar a parametrizar la busqueda con table_settings
     
@@ -160,39 +175,41 @@ def ver_pdf(archivo, pagina):
     # ---------------------- PARA EXTRAER LAS PALABRAS SOLAMENTE
     
     # imagen.draw_rects(pagina.extract_words()).show()
-    # imagen.draw_line(((60, 135), (60, 380)), stroke=(255, 0, 0), stroke_width=10).show()
+    # imagen.draw_line(((60, 135), (120, 380)), stroke=(255, 0, 0), stroke_width=10).show()
     # draw_line es para dibujar una linea
     # draw_lines es para dibujar lineas
     # el primer parametro es la coordenada de inicio (x,y) y el segundo la coordenada de fin (x,y)
     # stroke es el color de la linea
     # stroke_width es el ancho de la linea
-    
-    recorte = imagen.draw_rect((85, 175, 510, 255), stroke=(255, 0, 0), stroke_width=10)
+    recorte = pagina.within_bbox((85, 175, 510, 255))
+    # recorte = imagen.draw_rect((85, 175, 510, 255), stroke=(255, 0, 0), stroke_width=10)
+    # recorte1 = recorte.to_image(force_mediabox=True)
+    recorte = recorte.to_image(resolution=200)
+    recorte.reset().debug_tablefinder(table_settings).show()
     # recorte.show()
     # draw_rect es para dibujar un rectangulo
     # draw_rects es para dibujar rectangulos
-    pagina_recortada = pagina.within_bbox((85, 175, 510, 255))
+    # pagina_recortada = pagina.within_bbox((85, 175, 510, 255))
     
     
     # draw_circle es para dibujar un circulo
     # draw_circles es para dibujar circulos
 
     
-    # ---------------------------- TABLE_SETTINGS
-    # parametrizar la deteccion de tablas con plumber
-    table_settings = {
-        "vertical_strategy": "text", #"lines", "lines_strict", "text", or "explicit"
-        "horizontal_strategy": "text", #"lines", "lines_strict", "text", or "explicit"
-        "snap_y_tolerance": 5,
-        "intersection_x_tolerance": 1,
-    }
-    # imagen.reset().debug_tablefinder(table_settings).show()
+    
     
     # ahora extraigo la tabla de acuerdo a table_settings
     # tablas = pagina.extract_tables(table_settings)
-    # for row in tablas[:5]:
-    #     print(row)
+    # contador = 0
+    # for row in tablas:
+    #     for item in row:
+    #         print(item)
+    #         contador += 1
     
+    # print("la cantidad de elementos es: ", contador)
+            
+ 
+   
     
     
     # ------------------------- PARA EXTRAER LA TABLA    
